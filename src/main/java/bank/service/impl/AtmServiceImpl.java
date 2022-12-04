@@ -1,13 +1,12 @@
 package bank.service.impl;
 
 import bank.entity.Bank;
-import bank.entity.BankATM;
-import bank.entity.BankOffice;
-import bank.entity.Employee;
-import bank.entity.enums.StatusATM;
-import bank.service.AtmService;
-
 import java.util.Objects;
+import bank.entity.BankATM;
+import bank.entity.Employee;
+import bank.entity.BankOffice;
+import bank.service.AtmService;
+import bank.entity.enums.StatusATM;
 
 public class AtmServiceImpl implements AtmService {
     private BankATM bankATM = null;
@@ -43,8 +42,8 @@ public class AtmServiceImpl implements AtmService {
     }
 
     /*Добавление суммы денег в банкомат, а, соответственно, добавление суммы денег в офис банка
-    * и в банк, которому принадлежит данный банкомат, с учётом того, работает ли банкомат. Если он
-    * работает, то деньги вносятся и возвращается true, иначе false*/
+     * и в банк, которому принадлежит данный банкомат, с учётом того, работает ли банкомат. Если он
+     * работает, то деньги вносятся и возвращается true, иначе false*/
     @Override
     public Boolean addMoney(Double sumMoney) {
         if (!Objects.equals(this.bankATM.getStatus(), StatusATM.Work)) {
@@ -57,9 +56,9 @@ public class AtmServiceImpl implements AtmService {
     }
 
     /*Вычитание суммы денег из банкомата, и, соответственно, вычитание суммы денег из офиса банка и банка,
-    * которому принадлежит данный банкомат, с проверкой того, достаточно ли денег в банкомате, чтобы их вычесть.
-    * Если не достаточно, то возвращается false, иначе true. И с учётом того, работает ли банкомат и есть ли в
-    * нём деньги. Если он работает и в нём есть деньги, то деньги вычитаются и возвращается true, иначе false*/
+     * которому принадлежит данный банкомат, с проверкой того, достаточно ли денег в банкомате, чтобы их вычесть.
+     * Если не достаточно, то возвращается false, иначе true. И с учётом того, работает ли банкомат и есть ли в
+     * нём деньги. Если он работает и в нём есть деньги, то деньги вычитаются и возвращается true, иначе false*/
     @Override
     public Boolean subtractMoney(Double sumMoney) {
         if ((Objects.equals(this.bankATM.getStatus(), StatusATM.NotWork)) || (Objects.equals(this.bankATM.getStatus(),

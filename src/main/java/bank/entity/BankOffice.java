@@ -1,5 +1,6 @@
 package bank.entity;
 
+import java.util.ArrayList;
 import bank.entity.enums.StatusOffice;
 
 public class BankOffice {
@@ -16,6 +17,9 @@ public class BankOffice {
     private Double money;
     private Double rentCost;
 
+    private ArrayList<BankATM> bankATMS;
+    private ArrayList<Employee> employees;
+
     public BankOffice(Integer id, String name, Bank bank, String address, StatusOffice status, Double rentCost) {
         this.id = id;
         this.name = name;
@@ -29,6 +33,9 @@ public class BankOffice {
         this.mayDepositMoney = true;
         this.money = 0.0;
         this.rentCost = rentCost;
+
+        this.bankATMS = new ArrayList<>();
+        this.employees = new ArrayList<>();
     }
 
     @Override
@@ -151,5 +158,21 @@ public class BankOffice {
 
     public void setRentCost(Double rentCost) {
         this.rentCost = rentCost;
+    }
+
+    public ArrayList<BankATM> getBankATMS() {
+        return bankATMS;
+    }
+
+    public void setBankATMS(ArrayList<BankATM> bankATMS) {
+        this.bankATMS = bankATMS;
+    }
+
+    public ArrayList<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(ArrayList<Employee> employees) {
+        this.employees = employees;
     }
 }

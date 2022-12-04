@@ -11,6 +11,11 @@ public interface BankOfficeService {
     void delete();
     BankOffice getBankOffice();
 
+    Boolean addBankATM(AtmService atm);
+    Boolean delBankATM(AtmService atm);
+    Boolean addEmployee(EmployeeService employee);
+    Boolean delEmployee(EmployeeService employee);
+
     void addMoney(Double sumMoney);
     Boolean subtractMoney(Double sumMoney);
     Boolean addATM();

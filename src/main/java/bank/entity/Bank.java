@@ -1,5 +1,7 @@
 package bank.entity;
 
+import java.util.ArrayList;
+
 public class Bank {
     private Integer id;
     private String name;
@@ -11,6 +13,11 @@ public class Bank {
     private Double money;
     private Double interestRate;
 
+    private ArrayList<BankOffice> offices;
+    private ArrayList<BankATM> atms;
+    private ArrayList<Employee> employees;
+    private ArrayList<User> clients;
+
     public Bank(Integer id, String name) {
         this.id = id;
         this.name = name;
@@ -21,6 +28,11 @@ public class Bank {
         this.rating = null;
         this.money = null;
         this.interestRate = null;
+
+        this.offices = new ArrayList<>();
+        this.atms = new ArrayList<>();
+        this.employees = new ArrayList<>();
+        this.clients = new ArrayList<>();
     }
 
     @Override
@@ -100,5 +112,37 @@ public class Bank {
 
     public void setInterestRate(Double interestRate) {
         this.interestRate = interestRate;
+    }
+
+    public void setOffices(ArrayList<BankOffice> offices) {
+        this.offices = offices;
+    }
+
+    public ArrayList<BankOffice> getOffices() {
+        return offices;
+    }
+
+    public void setATMS(ArrayList<BankATM> atms) {
+        this.atms = atms;
+    }
+
+    public ArrayList<BankATM> getATMS() {
+        return atms;
+    }
+
+    public void setEmployees(ArrayList<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public ArrayList<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setClients(ArrayList<User> clients) {
+        this.clients = clients;
+    }
+
+    public ArrayList<User> getClients() {
+        return clients;
     }
 }
