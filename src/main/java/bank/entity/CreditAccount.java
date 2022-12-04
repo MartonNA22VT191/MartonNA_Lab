@@ -1,5 +1,6 @@
 package bank.entity;
 
+import bank.entity.jsonClasses.JsonCreditAcc;
 import bank.entity.parentClasses.BankAccount;
 
 import java.time.LocalDate;
@@ -35,6 +36,20 @@ public class CreditAccount extends BankAccount {
                 amount + "\nПроцентная ставка: " + interestRate + "%" + "\nЕжемесячный платёж: " +
                 countMonth + "\nСотрудник, выдавший кредит: " + employee.getFullName() +
                 "\nId платёжного счёта: " + paymentAccount.getId().toString();
+    }
+
+    public void updateFromJsonClass(JsonCreditAcc jsonCreditAcc) {
+        this.setId(jsonCreditAcc.getId());
+        this.getBank().setId(jsonCreditAcc.getBankID());
+        this.getUser().setId(jsonCreditAcc.getUserID());
+        this.getPaymentAccount().setId(jsonCreditAcc.getPayAccID());
+        this.getEmployee().setId(jsonCreditAcc.getEmployeeID());
+        this.setStartDate(LocalDate.parse(jsonCreditAcc.getStartDate()));
+        this.setEndDate(LocalDate.parse(jsonCreditAcc.getEndDate()));
+        this.setCountMonth(jsonCreditAcc.getCountMonth());
+        this.setAmount(jsonCreditAcc.getAmount());
+        this.setMonthlyAmount(jsonCreditAcc.getMonthlyAmount());
+        this.setInterestRate(jsonCreditAcc.getInterestRate());
     }
 
     public LocalDate getStartDate() {
