@@ -8,6 +8,10 @@ import bank.entity.*;
 
 import java.time.LocalDate;
 
+import bank.entity.enums.StatusATM;
+import bank.entity.enums.StatusOffice;
+import bank.exceptions.*;
+import bank.service.BankService;
 import bank.service.CreditAccountService;
 import bank.service.PaymentAccountService;
 import bank.service.UserService;
@@ -82,54 +86,50 @@ public class UserServiceImpl implements UserService {
 
     /*Добавление кредитного счёта в список кредитных счетов клиента*/
     @Override
-    public Boolean addCreditAcc(CreditAccountService creditAcc) {
+    public void addCreditAcc(CreditAccountService creditAcc) throws CredAccUserException {
         if (!Objects.equals(creditAcc.getCreditAcc().getUser(), this.user))
-            return false;
+            throw new CredAccUserException();
         ArrayList<CreditAccount> creditAccounts = this.user.getCreditAccounts();
         creditAccounts.add(creditAcc.getCreditAcc());
         this.user.setCreditAccounts(creditAccounts);
         creditAcc.getCreditAcc().setUser(this.user);
-        return true;
     }
 
     /*Удаление кредитного счёта из списка кредитных счетов клиента*/
     @Override
-    public Boolean delCreditAcc(CreditAccountService creditAcc) {
+    public void delCreditAcc(CreditAccountService creditAcc) throws CredAccUserException {
         if (!Objects.equals(creditAcc.getCreditAcc().getUser(), this.user))
-            return false;
+            throw new CredAccUserException();
         ArrayList<CreditAccount> creditAccounts = this.user.getCreditAccounts();
         creditAccounts.remove(creditAcc.getCreditAcc());
         this.user.setCreditAccounts(creditAccounts);
         creditAcc.getCreditAcc().setUser(this.user);
-        return true;
     }
 
     /*Добавление платёжного счёта в список платёжных счетов клиента*/
     @Override
-    public Boolean addPayAcc(PaymentAccountService payAcc) {
+    public void addPayAcc(PaymentAccountService payAcc) throws PayAccUserException {
         if (!Objects.equals(payAcc.getPayAcc().getUser(), this.user))
-            return false;
+            throw new PayAccUserException();
         ArrayList<PaymentAccount> paymentAccounts = this.user.getPaymentAccounts();
         paymentAccounts.add(payAcc.getPayAcc());
         this.user.setPaymentAccounts(paymentAccounts);
         payAcc.getPayAcc().setUser(this.user);
-        return true;
     }
 
     /*Удаление платёжного счёта из списка платёжных счетов клиента*/
     @Override
-    public Boolean delPayAcc(PaymentAccountService payAcc) {
+    public void delPayAcc(PaymentAccountService payAcc) throws PayAccUserException {
         if (!Objects.equals(payAcc.getPayAcc().getUser(), this.user))
-            return false;
+            throw new PayAccUserException();
         ArrayList<PaymentAccount> paymentAccounts = this.user.getPaymentAccounts();
         paymentAccounts.remove(payAcc.getPayAcc());
         this.user.setPaymentAccounts(paymentAccounts);
         payAcc.getPayAcc().setUser(this.user);
-        return true;
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         StringBuilder returnStr = new StringBuilder(this.user.toString());
         returnStr.append("\n\nПлатёжные счета клиента:");
         for (int i_1 = 0; i_1 < this.user.getPaymentAccounts().size(); i_1++) {
@@ -142,6 +142,49 @@ public class UserServiceImpl implements UserService {
             returnStr.append(user.getCreditAccounts().get(i_1).toString());
         }
         return returnStr.toString();
+    }
+
+    /*Попытка получения кредита пользователем у одного из банков*/
+    @Override
+    public void applyForLoan(BankService bank, BankOffice workOffice, Employee workEmployee, BankATM atm,
+                             Double loanSum, LocalDate startDate, Integer countMonth, PaymentAccountService payAcc,
+                             CreditAccountService creditAcc) throws CreditExtension, BadUserRatingException,
+            PayAccUserException, UserBankException, CredAccUserException {
+        if (this.user.getCreditRating()/10 < bank.getBank().getRating()) {
+            throw new BadUserRatingException(bank.getBank().getRating(),
+                    this.user.getCreditRating()/10);
+        }
+        if (workOffice.getStatus() != StatusOffice.Work)
+            throw new CreditExtension("Выбранный офис не работает");
+        if (workOffice.getMoney() < loanSum)
+            throw new CreditExtension("В выбранном офисе недостаточно денег");
+        if (atm.getStatus() != StatusATM.Work)
+            throw new CreditExtension("Банкомат, в выбранном офисе, не работает");
+        if (atm.getMoney() < loanSum)
+            throw new CreditExtension("В выбранном банкомате недостаточно денег");
+        if (!workEmployee.getCanLend())
+            throw new CreditExtension("Выбранный сотрудник не может выдавать кредиты");
+
+        if (!bank.getBank().getClients().contains(this.user)) {
+            payAcc.create(100, this.user, bank.getBank());
+            this.addPayAcc(payAcc);
+            bank.addUser(this);
+        }
+        else {
+            payAcc.update(this.getPayAccByBank(bank.getBank()));
+        }
+        creditAcc.create(100, this.user, bank.getBank(), workEmployee, payAcc.getPayAcc(), startDate,
+                countMonth, loanSum);
+        this.addCreditAcc(creditAcc);
+    }
+
+    private PaymentAccount getPayAccByBank(Bank bank) {
+        for (int i = 0; i < this.user.getPaymentAccounts().size(); i++) {
+            if (Objects.equals(this.user.getPaymentAccounts().get(i).getBank().getId(), bank.getId())) {
+                return this.user.getPaymentAccounts().get(i);
+            }
+        }
+        return null;
     }
 
     /*Смена пользователем работы, а соответственно, и заработной платы, и пересчёт его кредитного рейтинга*/

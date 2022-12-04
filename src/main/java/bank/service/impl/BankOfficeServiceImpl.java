@@ -5,6 +5,8 @@ import bank.entity.BankATM;
 import bank.entity.BankOffice;
 import bank.entity.Employee;
 import bank.entity.enums.StatusOffice;
+import bank.exceptions.AtmOfficeException;
+import bank.exceptions.EmployeeOfficeException;
 import bank.service.AtmService;
 import bank.service.BankOfficeService;
 import bank.service.EmployeeService;
@@ -43,50 +45,46 @@ public class BankOfficeServiceImpl implements BankOfficeService {
 
     /*Добавление банкомата в список банкоматов офиса*/
     @Override
-    public Boolean addBankATM(AtmService atm) {
+    public void addBankATM(AtmService atm) throws AtmOfficeException {
         if (!Objects.equals(atm.getBankATM().getBankOffice(), this.bankOffice))
-            return false;
+            throw new AtmOfficeException();
         ArrayList<BankATM> bankATMS = this.bankOffice.getBankATMS();
         bankATMS.add(atm.getBankATM());
         this.bankOffice.setBankATMS(bankATMS);
         atm.getBankATM().setBankOffice(this.bankOffice);
-        return true;
     }
 
     /*Удаление банкомата из списка банкоматов офиса*/
     @Override
-    public Boolean delBankATM(AtmService atm) {
+    public void delBankATM(AtmService atm) throws AtmOfficeException {
         if (!Objects.equals(atm.getBankATM().getBankOffice(), this.bankOffice))
-            return false;
+            throw new AtmOfficeException();
         ArrayList<BankATM> bankATMS = this.bankOffice.getBankATMS();
         bankATMS.remove(atm.getBankATM());
         this.bankOffice.setBankATMS(bankATMS);
         atm.getBankATM().setBankOffice(this.bankOffice);
-        return true;
     }
 
     /*Добавление работника в список работников офиса*/
     @Override
-    public Boolean addEmployee(EmployeeService employee) {
+    public void addEmployee(EmployeeService employee) throws EmployeeOfficeException {
         if (!Objects.equals(employee.getEmployee().getBankOffice(), this.bankOffice))
-            return false;
+            throw new EmployeeOfficeException();
         ArrayList<Employee> employees = this.bankOffice.getEmployees();
         employees.add(employee.getEmployee());
         this.bankOffice.setEmployees(employees);
         employee.getEmployee().setBankOffice(this.bankOffice);
-        return true;
     }
 
     /*Удаление работника из списка работников офиса*/
     @Override
-    public Boolean delEmployee(EmployeeService employee) {
+    public void delEmployee(EmployeeService employee) throws EmployeeOfficeException {
         if (!Objects.equals(employee.getEmployee().getBankOffice(), this.bankOffice))
-            return false;
+            throw new EmployeeOfficeException();
         ArrayList<Employee> employees = this.bankOffice.getEmployees();
         employees.remove(employee.getEmployee());
         this.bankOffice.setEmployees(employees);
         employee.getEmployee().setBankOffice(this.bankOffice);
-        return true;
     }
 
     /*Добавление суммы денег в офис, и, соответственно, добавление суммы денег в банк, которому

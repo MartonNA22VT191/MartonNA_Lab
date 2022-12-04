@@ -1,8 +1,10 @@
 package bank.service;
 
-import bank.entity.Bank;
-import bank.entity.User;
+import bank.entity.*;
+import bank.exceptions.*;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public interface UserService {
     void create(Integer id, String name, String surname, LocalDate birthDay, String work);
@@ -12,12 +14,13 @@ public interface UserService {
 
     void addBank(Bank bank);
     void delBank(Bank bank);
-    Boolean addCreditAcc(CreditAccountService creditAcc);
-    Boolean delCreditAcc(CreditAccountService creditAcc);
-    Boolean addPayAcc(PaymentAccountService payAcc);
-    Boolean delPayAcc(PaymentAccountService payAcc);
-
-    String getInfo();
-
+    void addCreditAcc(CreditAccountService creditAcc) throws CredAccUserException;
+    void delCreditAcc(CreditAccountService creditAcc) throws CredAccUserException;
+    void addPayAcc(PaymentAccountService payAcc) throws PayAccUserException;
+    void delPayAcc(PaymentAccountService payAcc) throws PayAccUserException;
+    void applyForLoan(BankService bank, BankOffice workOffice, Employee workEmployee, BankATM atm, Double loanSum,
+                      LocalDate startDate, Integer countMonth, PaymentAccountService payAcc,
+                      CreditAccountService creditAcc) throws CreditExtension, BadUserRatingException,
+            PayAccUserException, UserBankException, CredAccUserException;
     void changeWork(String newWork, Double newMonthSalary);
 }
