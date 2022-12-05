@@ -1,5 +1,6 @@
 package bank.entity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Bank {
@@ -39,7 +40,8 @@ public class Bank {
     public String toString() {
         return "Имя банка: " + name + "\nКоличество офисов: " + countOffice + "\nКоличество банкоматов: " + countATM +
                 "\nКоличество сотрудников: " + countEmployees + "\nКоличество клиентов: " + countClients +
-                "\nРейтинг: " + rating + "\nКоличество денег: " + money + "\nПроцентная ставка: " + interestRate;
+                "\nРейтинг: " + rating + "\nКоличество денег: " + new DecimalFormat("#0.00").format(money) +
+                "\nПроцентная ставка: " + interestRate;
     }
 
     public Integer getId() {
