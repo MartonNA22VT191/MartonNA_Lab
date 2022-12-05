@@ -2,6 +2,8 @@ package bank.entity;
 
 import bank.entity.enums.StatusATM;
 
+import java.text.DecimalFormat;
+
 public class BankATM {
     private Integer id;
     private String name;
@@ -46,7 +48,8 @@ public class BankATM {
             str += "\nМожно внести деньги";
         else
             str += "\nНельзя внести деньги";
-        str += "\nДенежная сумма: " + money + "\nСтоимость обслуживания: " + maintenanceCost;
+        str += "\nДенежная сумма: " + new DecimalFormat("#0.00").format(money) +
+                "\nСтоимость обслуживания: " + new DecimalFormat("#0.00").format(maintenanceCost);
         return str;
     }
 

@@ -1,5 +1,6 @@
 package bank.entity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import bank.entity.enums.StatusOffice;
 
@@ -60,7 +61,8 @@ public class BankOffice {
             str += "\nМожно внести деньги";
         else
             str += "\nНельзя внести деньги";
-        str += "\nДенежная сумма: " + money + "\nАрендная плата: " + rentCost;
+        str += "\nДенежная сумма: " + new DecimalFormat("#0.00").format(money) +
+                "\nАрендная плата: " + new DecimalFormat("#0.00").format(rentCost);
         return str;
     }
 
